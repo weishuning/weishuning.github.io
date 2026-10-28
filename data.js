@@ -2,7 +2,8 @@
 // 每个系列：slug（网址里用的名字，英文小写）、标题、年份、类型、一句介绍、照片列表。
 // 每张照片：src 图片路径、w/h 宽高、place 地点、date 日期、gear 器材（可以留空 ""）。
 // 每个文件夹里的 thumbs/ 放的是同名小图（长边 480px），给首页的 Archive 方格用；没有也能显示，只是加载慢一些。
-// 首页封面默认是第一张，想用别的就写 cover: 第几张（从 0 开始数，第三张写 2）；feature: true 的照片在系列页里会铺满整个屏幕宽度。
+// 首页封面默认是第一张，想用别的就写 cover: 第几张（从 0 开始数，第三张写 2）；
+// coverPos 调整首页封面的裁切位置（左右 上下，0% 是最左/最上，50% 是居中）；feature: true 的照片在系列页里会铺满整个屏幕宽度。
 
 const local = (src, w, h) => ({ src, w, h });
 
@@ -19,7 +20,7 @@ const SERIES = [
       { ...local("photos/seokjojeon/07.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
       { ...local("photos/seokjojeon/08.jpg", 1333, 2000), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" } ] },
 
-  { slug: "anguk", title: "Anguk", year: "2026", kind: "City", cover: 1,
+  { slug: "anguk", title: "Anguk", year: "2026", kind: "City", cover: 1, coverPos: "11% 50%",
     text: "Palace walls, small shops and the subway around Anguk, Seoul, September 2026.",
     photos: [
       { ...local("photos/anguk/01.jpg", 1429, 2000), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },

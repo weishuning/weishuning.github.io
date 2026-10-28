@@ -458,7 +458,7 @@
   let active = 0;
   series.forEach((s, i) => {
     const b = document.createElement("button");
-    b.innerHTML = `<img src="${s.photos[s.cover || 0][0]}" alt="${s.title}">`;
+    b.innerHTML = `<img src="${s.photos[s.cover || 0][0]}" alt="${s.title}"${s.coverPos ? ` style="object-position:${s.coverPos}"` : ""}>`;
     fadeIn(b.querySelector("img"));
     if (!scrub) b.addEventListener("click", () => {
       if (i === active) location.href = seriesUrl(series[active]);
