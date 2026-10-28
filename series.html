@@ -92,6 +92,13 @@
   .solo-r { grid-column: 8 / -1; }
   .solo-c { grid-column: 5 / 9; }
   .pair   { grid-column: 2 / 12; display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--gutter); align-items: end; }
+  .pair > :last-child { margin-bottom: clamp(40px, 8vw, 120px); }
+  /* 两张横图错落并排：一大一小，小的往下错开 */
+  .duo { grid-column: 1 / -1; display: grid; grid-template-columns: 7fr 4fr; column-gap: var(--gutter); align-items: start; }
+  .duo > :last-child { margin-top: clamp(60px, 12vw, 200px); }
+  .duo.flip { grid-template-columns: 4fr 7fr; }
+  .duo.flip > :first-child { margin-top: clamp(60px, 12vw, 200px); }
+  .duo.flip > :last-child { margin-top: 0; }
 
 
   /* ---------- Next series ---------- */
@@ -115,10 +122,20 @@
     .s-title, .s-meta { grid-column: 1 / -1; }
     .s-meta { margin-top: 28px; }
     .flow { row-gap: 64px; }
-    .full, .wide-l, .wide-r, .mid-c, .pair { grid-column: 1 / -1; }
-    .solo-l, .solo-c { grid-column: 1 / 10; }
-    .solo-r { grid-column: 4 / -1; }
+    /* 手机：6 列，照片宽窄、左右错开，不再每张都一样宽 */
+    .flow { grid-template-columns: repeat(6, 1fr); column-gap: 8px; }
+    .full, .pair, .duo { grid-column: 1 / -1; }
+    .wide-l { grid-column: 1 / 6; }
+    .wide-r { grid-column: 2 / -1; }
+    .mid-c  { grid-column: 2 / 6; }
+    .solo-l { grid-column: 1 / 5; }
+    .solo-r { grid-column: 3 / -1; }
+    .solo-c { grid-column: 2 / 6; }
     .pair { column-gap: 8px; }
+    .pair > :last-child { margin-bottom: 40px; }
+    .duo { column-gap: 8px; grid-template-columns: 3fr 2fr; }
+    .duo.flip { grid-template-columns: 2fr 3fr; }
+    .duo > :last-child, .duo.flip > :first-child { margin-top: 56px; }
     .s-head { padding-top: 40px; }
     .s-title { font-size: 17vw; letter-spacing: -0.012em; }
     .flow { padding-top: 48px; padding-bottom: 72px; }
@@ -195,17 +212,27 @@
 
   // Layout rules:
   // - feature: true  -> edge to edge
-  // - landscape      -> cycles through full width / wide left / wide right / centred
+  // - landscape      -> cycles through full width / wide left / wide right / centred,
+  //                     and every third one sits next to the following landscape as a staggered big/small duo
   // - two portraits  -> side by side
   // - one portrait   -> one side, alternating, with empty space on the other
   Promise.all(s.photos.map(shape)).then(ratios => {
     const landscape = ["full", "wide-r", "mid-c", "wide-l"];
     const solo = ["solo-l", "solo-r", "solo-c"];
-    let li = 0, pi = 0, html = "";
+    let li = 0, pi = 0, di = 0, html = "";
     for (let i = 0; i < s.photos.length; i++) {
       const p = s.photos[i], r = ratios[i];
       if (p.feature) { html += fig(p, i + 1, "bleed"); continue; }
-      if (r >= 1.05) { html += fig(p, i + 1, landscape[li++ % landscape.length]); continue; }
+      if (r >= 1.05) {
+        const q = s.photos[i + 1];
+        if (li % 3 === 1 && q && !q.feature && ratios[i + 1] >= 1.05) {
+          html += `<div class="duo${di++ % 2 ? " flip" : ""}">${fig(p, i + 1)}${fig(q, i + 2)}</div>`;
+          i++; li++;
+          continue;
+        }
+        html += fig(p, i + 1, landscape[li++ % landscape.length]);
+        continue;
+      }
       const q = s.photos[i + 1];
       if (q && !q.feature && ratios[i + 1] < 1.05) {
         html += `<div class="pair">${fig(p, i + 1)}${fig(q, i + 2)}</div>`;
