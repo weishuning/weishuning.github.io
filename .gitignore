@@ -1,0 +1,4 @@
+# 不上传到网上的文件
+_drafts/
+.claude/
+.DS_Store

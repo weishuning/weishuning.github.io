@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Shuning Wei · Light &amp; Street</title>
+<meta name="description" content="Landscape and street photography portfolio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@200&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --muted: #8a8a8a;
+    --line: #e6e6e6;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --gutter: clamp(16px, 3.2vw, 48px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  a { color: inherit; text-decoration: none; }
+  button { background: none; border: 0; font: inherit; color: inherit; cursor: pointer; }
+  .mono {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  img.fade { opacity: 0; transition: opacity .6s ease; }
+  img.fade.loaded { opacity: 1; }
+
+  /* ---------- Bars (top & bottom) ---------- */
+  .bar {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+    padding: 18px var(--gutter);
+  }
+  .bar .mid { justify-self: center; }
+  .bar nav { justify-self: end; display: flex; gap: 22px; }
+  .bar a:hover, .bar button:hover { color: var(--muted); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: calc(100svh - 52px);
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: 64px;
+    padding: clamp(24px, 5vw, 56px) var(--gutter) var(--gutter);
+  }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
+  .name {
+    font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
+    font-weight: 200;
+    font-size: clamp(52px, 9.4vw, 140px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .intro { text-align: right; font-size: clamp(14px, 1.25vw, 17px); line-height: 1.3; letter-spacing: -0.01em; }
+  .intro a:hover { color: var(--muted); }
+  .intro .series-name { font-style: normal; color: var(--muted); }
+
+  /* ---------- Filmstrip ---------- */
+  .hero-strip { margin-inline: calc(-1 * var(--gutter)); }
+  .strip {
+    --s: 110px; --l: 230px; --g: 10px;
+    overflow: hidden;
+    height: calc(var(--l) * 4 / 3);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    touch-action: pan-y;
+  }
+  .track {
+    display: flex; align-items: center; gap: var(--g);
+    height: 100%;
+    transition: transform .8s cubic-bezier(.65, 0, .25, 1);
+  }
+  .track button {
+    flex: none;
+    width: var(--s); height: calc(var(--s) * 4 / 3);
+    overflow: hidden; background: var(--line);
+    transition: width .8s cubic-bezier(.65, 0, .25, 1), height .8s cubic-bezier(.65, 0, .25, 1), opacity .4s;
+  }
+  .track button:not(.active):hover { opacity: .7; }
+  .track button.active { width: var(--l); height: calc(var(--l) * 4 / 3); }
+  .strip.scrub .track { transition-duration: .5s; }
+  .strip.scrub { cursor: pointer; }
+  .strip.scrub .track button { cursor: pointer; transition-duration: .5s, .5s, .4s; }
+  .strip.scrub .track button:not(.active):hover { opacity: 1; }
+  .strip-foot {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline;
+    padding: 28px var(--gutter) 0;
+  }
+  .strip-foot #stripCap { text-align: center; }
+  .strip-foot #stripNext { justify-self: end; }
+  .strip-foot button:hover { color: var(--muted); }
+
+  /* ---------- Series viewer ---------- */
+  .archive {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    padding: clamp(64px, 9vw, 120px) var(--gutter);
+    border-top: 1px solid var(--line);
+  }
+  .arch-left {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 48px;
+    border-top: 1px solid var(--line); padding-top: 16px;
+  }
+  .bracket { font-size: clamp(15px, 1.3vw, 18px); color: var(--muted); letter-spacing: -0.01em; }
+  /* 滚轮选择：中间一行选中放大，越往上下越小越淡 */
+  .series-list {
+    --row: clamp(40px, 4vw, 56px);
+    list-style: none; margin-top: 28px;
+    height: calc(var(--row) * 5);
+    overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain;
+    padding: calc(var(--row) * 2) 0;
+    scrollbar-width: none;
+    font-size: clamp(20px, 2vw, 28px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.2;
+  }
+  .series-list::-webkit-scrollbar { display: none; }
+  .series-list li { height: var(--row); display: flex; align-items: center; scroll-snap-align: center; }
+  .series-list button {
+    color: #c6c6c6; transform-origin: left center; white-space: nowrap;
+    transition: color .25s;
+  }
+  .series-list button:hover { color: var(--ink); }
+  .series-list button.active { color: var(--ink); }
+  .series-list .yr { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0; margin-left: 10px; vertical-align: super; }
+  .arch-text { max-width: 440px; font-size: 14px; }
+  .arch-text p { margin-bottom: 18px; }
+  .more:hover { color: var(--muted); }
+
+  .pager { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; margin-bottom: 14px; }
+  .pager .rule { flex: 1; height: 1px; background: var(--line); }
+  .pager button:hover { color: var(--muted); }
+  .pager em { font-style: normal; }
+  .viewer { aspect-ratio: 4 / 3; overflow: hidden; background: var(--line); }
+  .viewer img { transition: opacity .45s ease; }
+  .v-cap { display: flex; justify-content: space-between; gap: 24px; margin-top: 10px; font-size: 11px; }
+  .v-cap #vMeta { text-align: right; color: var(--muted); }
+
+  /* ---------- All photographs ---------- */
+  .all {
+    padding: clamp(28px, 4vw, 48px) var(--gutter) clamp(64px, 9vw, 120px);
+    border-top: 1px solid var(--line);
+  }
+  .all-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(28px, 4vw, 48px); }
+  .all-head h2 { font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif; font-weight: 200; font-size: clamp(32px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 4px; }
+  .grid button { aspect-ratio: 1; overflow: hidden; background: var(--line); }
+  .grid img { transition: opacity .3s, transform .8s ease; }
+  .grid button:hover img { transform: scale(1.06); }
+
+  /* ---------- Lightbox（点开后完整显示） ---------- */
+  .lb {
+    position: fixed; inset: 0; z-index: 110;
+    display: grid; grid-template-rows: auto 1fr auto;
+    background: var(--bg);
+    opacity: 0; visibility: hidden;
+    transition: opacity .35s ease, visibility 0s .35s;
+  }
+  .lb.open { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+  .lb-stage { position: relative; min-height: 0; padding: 0 var(--gutter); display: flex; align-items: center; justify-content: center; }
+  .lb-stage img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity .25s; }
+  .lb-prev, .lb-next { position: absolute; top: 0; bottom: 0; width: 50%; }
+  .lb-prev { left: 0; cursor: w-resize; }
+  .lb-next { right: 0; cursor: e-resize; }
+  .lb-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; padding: 18px var(--gutter); }
+  .lb-foot #lbCap { text-align: center; }
+  .lb-foot a { justify-self: end; }
+  .lb a:hover, .lb button:hover { color: var(--muted); }
+
+  /* ---------- About ---------- */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto auto;
+    min-height: 100svh;
+    padding: clamp(28px, 4vw, 48px) var(--gutter) clamp(64px, 9vw, 120px);
+    border-top: 1px solid var(--line);
+  }
+  .about-name {
+    font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
+    font-weight: 200;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+  .about-edu { margin-top: 18px; font-size: 13px; line-height: 1.35; letter-spacing: -0.005em; }
+  .about-edu span { color: var(--muted); }
+  .cols { display: grid; grid-template-columns: 2fr 1fr 1fr; column-gap: var(--gutter); }
+  .about-portrait {
+    grid-column: 2;
+    align-self: end;
+    margin: clamp(64px, 10vw, 140px) 0 14px;
+    background: var(--line);
+  }
+  .about-portrait img { width: 100%; height: auto; display: block; }
+  .about-row {
+    border-top: 1px solid var(--ink);
+    padding-top: 10px;
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+  }
+  .about-row p { max-width: 300px; }
+  .about-row + .about-row { border-top-color: var(--line); margin-top: 40px; }
+  .about-row dl div { margin-bottom: 4px; }
+  .about-row dt { color: var(--muted); display: inline; margin-right: 8px; }
+  .about-row dd { display: inline; }
+  .about-row a:hover { color: var(--muted); }
+
+  footer.bar { border-top: 1px solid var(--line); }
+
+  /* ---------- Index overlay（硫酸纸效果） ---------- */
+  .bar button { text-transform: inherit; letter-spacing: inherit; }
+  .nav-index { display: none; }
+  .index-ov {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; flex-direction: column;
+    backdrop-filter: blur(24px) saturate(1.1);
+    -webkit-backdrop-filter: blur(24px) saturate(1.1);
+    opacity: 0; visibility: hidden;
+    transition: opacity .5s ease, visibility 0s .5s;
+  }
+  .index-ov.open { opacity: 1; visibility: visible; transition: opacity .5s ease; }
+  .ov-bg { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+  .ov-bg img {
+    position: absolute; inset: 0;
+    filter: blur(34px) saturate(1.15);
+    transform: scale(1.2);
+    opacity: 0; transition: opacity .7s ease;
+  }
+  .ov-bg img.show { opacity: 1; }
+  .ov-veil { position: absolute; inset: 0; z-index: -1; background: rgba(255, 255, 255, 0.52); }
+  .ov-list {
+    padding: clamp(16px, 3vw, 40px) var(--gutter) 0;
+    padding-right: calc(var(--gutter) + 80px);
+    font-size: clamp(38px, 6vw, 92px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+  .ov-list a { transition: color .15s; }
+  .ov-list a:hover, .ov-list a:focus-visible {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ink);
+    outline: none;
+  }
+  .ov-close { position: absolute; top: 64px; right: var(--gutter); width: 48px; height: 48px; }
+  .ov-close::before, .ov-close::after {
+    content: ""; position: absolute; left: -10px; right: -10px; top: 50%;
+    height: 1.5px; background: var(--ink);
+  }
+  .ov-close::before { transform: rotate(45deg); }
+  .ov-close::after { transform: rotate(-45deg); }
+  .ov-foot { margin-top: auto; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 760px) {
+    .bar { grid-template-columns: 1fr 1fr; }
+    .bar .mid { display: none; }
+    .nav-index { display: inline; }
+    .ov-close { top: 52px; width: 32px; height: 32px; }
+    .bar nav { gap: 14px; }
+    .hero { min-height: auto; gap: 56px; }
+    .intro { text-align: left; }
+    .strip { --s: 64px; --l: 200px; --g: 6px; }
+    .strip-foot { grid-template-columns: 1fr 1fr; row-gap: 10px; }
+    .strip-foot #stripCap { grid-column: 1 / -1; order: -1; }
+    .archive { grid-template-columns: 1fr; }
+    .arch-left { gap: 32px; }
+    .about { min-height: auto; }
+    .grid { grid-template-columns: repeat(4, 1fr); gap: 3px; }
+    .lb-foot { grid-template-columns: 1fr auto; row-gap: 8px; }
+    .lb-foot #lbCap { grid-column: 1 / -1; order: -1; text-align: left; }
+    .cols { grid-template-columns: 1fr 1fr; row-gap: 14px; }
+    .about-row > :first-child { grid-column: 1 / -1; }
+    .about-text > :not(:first-child) { grid-column: 1 / -1; }
+    .about-text p { max-width: none; }
+    .about-portrait { grid-column: 1 / -1; width: 64%; margin-top: 48px; }
+    .about-row dl { grid-column: 1 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar mono" id="top">
+  <span>Shuning Wei</span>
+  <button class="mid" data-open-index>(Index)</button>
+  <nav>
+    <button class="nav-index" data-open-index>Index</button>
+    <a href="#works">Work</a>
+    <a href="#series">Series</a>
+    <a href="#all">Archive</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-top">
+    <h1 class="name">Shuning Wei</h1>
+    <p class="intro">
+      <em class="series-name">Light &amp; Street</em><br>
+      Landscape &amp; Street Photographer<br>
+      <a href="mailto:weishuningwsn@gmail.com">weishuningwsn@gmail.com</a>
+    </p>
+  </div>
+  <div class="hero-strip" id="works">
+    <div class="strip" id="strip"><div class="track" id="track"></div></div>
+    <div class="strip-foot mono">
+      <button id="stripPrev">(Prev)</button>
+      <span id="stripCap"></span>
+      <button id="stripNext">(Next)</button>
+    </div>
+  </div>
+</section>
+
+<section class="archive" id="series">
+  <div class="arch-left">
+    <div>
+      <p class="bracket">[ The Series ]</p>
+      <ul class="series-list" id="seriesList"></ul>
+    </div>
+    <div class="arch-text">
+      <p>I photograph the quiet edges of places: coastlines before the crowds arrive, side streets after the rain, the hour when the light turns soft. Most of this work is made on foot, while travelling.</p>
+      <a href="#all" class="more">Enter the archive →</a>
+    </div>
+  </div>
+  <div class="arch-right">
+    <div class="pager">
+      <button id="vPrev">[ Prev ]</button>
+      <span class="rule"></span>
+      <em id="vCount"></em>
+      <span class="rule"></span>
+      <button id="vNext">[ Next ]</button>
+    </div>
+    <div class="viewer"><img id="vImg" alt=""></div>
+    <div class="v-cap"><span id="vTitle"></span><span id="vMeta"></span></div>
+  </div>
+</section>
+
+<section class="all" id="all">
+  <div class="all-head">
+    <h2>Archive</h2>
+    <span class="mono" id="allCount"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-head">
+    <h2 class="about-name">About</h2>
+    <p class="about-edu">Chung-Ang University, Korea<br><span>Visual Communication Design</span></p>
+  </div>
+  <div class="cols">
+    <div class="about-portrait"><img src="photos/portrait.jpg" alt="Portrait of Shuning Wei" loading="lazy"></div>
+  </div>
+  <div class="cols about-row about-text">
+    <p>Bio</p>
+    <p>I shoot landscapes and streets, on digital and film. Most of these were taken in Seoul: back streets, the Han River, early mornings. The rest are from trips.</p>
+    <p>I like places best when they're quiet. Studying design probably shapes how I frame things, but mostly I just take pictures of what I like looking at.</p>
+  </div>
+  <div class="cols about-row">
+    <p>Contact</p>
+    <dl>
+      <div><dt>Email</dt><dd><a href="mailto:weishuningwsn@gmail.com">weishuningwsn@gmail.com</a></dd></div>
+    </dl>
+    <dl>
+      <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/weishunyeong/" target="_blank" rel="noopener">@weishunyeong</a></dd></div>
+      <div><dt>RedNote</dt><dd><a href="https://xhslink.cn/o/6FowlFdEAAC" target="_blank" rel="noopener">Profile</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<footer class="bar mono">
+  <span>© 2026 Shuning Wei</span>
+  <a class="mid" href="#top">(Back to top)</a>
+  <nav>
+    <a href="https://www.instagram.com/weishunyeong/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://xhslink.cn/o/6FowlFdEAAC" target="_blank" rel="noopener">RedNote</a>
+  </nav>
+</footer>
+
+<div class="index-ov" id="indexOv" aria-hidden="true">
+  <div class="ov-bg" id="ovBg"></div>
+  <div class="ov-veil"></div>
+  <div class="bar mono">
+    <span>Shuning Wei</span>
+    <span class="mid">(Index)</span>
+    <nav><span id="ovCount"></span></nav>
+  </div>
+  <button class="ov-close" id="ovClose" aria-label="Close index"></button>
+  <p class="ov-list" id="ovList"></p>
+  <div class="bar mono ov-foot">
+    <span>Hover to preview</span>
+    <span class="mid">Click to open</span>
+    <nav><span>Esc to close</span></nav>
+  </div>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photograph">
+  <div class="bar mono">
+    <span id="lbNo"></span>
+    <span class="mid" id="lbSeries"></span>
+    <nav><button id="lbClose">(Close)</button></nav>
+  </div>
+  <div class="lb-stage">
+    <img id="lbImg" alt="">
+    <button class="lb-prev" id="lbPrev" aria-label="Previous photograph"></button>
+    <button class="lb-next" id="lbNext" aria-label="Next photograph"></button>
+  </div>
+  <div class="lb-foot mono">
+    <span id="lbHint">← → to browse</span>
+    <span id="lbCap"></span>
+    <a id="lbLink">View series →</a>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  // 照片数据在 data.js 里；这里转成 [图片, 地点, 日期, 器材] 的格式
+  const series = SERIES.map(s => ({ ...s, photos: s.photos.map(p => [p.src, p.place, p.date, p.gear]) }));
+  const seriesUrl = s => `series.html?s=${s.slug}`;
+
+  const pad = n => String(n).padStart(2, "0");
+  const $ = id => document.getElementById(id);
+  const fadeIn = img => { img.classList.add("fade"); img.onload = () => img.classList.add("loaded"); };
+
+  // 首页胶片条：每个系列一张封面，鼠标左右移动切换，点击进入系列页
+  const track = $("track"), strip = $("strip");
+  const scrub = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  let active = 0;
+  series.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.innerHTML = `<img src="${s.photos[s.cover || 0][0]}" alt="${s.title}">`;
+    fadeIn(b.querySelector("img"));
+    if (!scrub) b.addEventListener("click", () => {
+      if (i === active) location.href = seriesUrl(series[active]);
+      else setActive(i);
+    });
+    track.appendChild(b);
+  });
+  function setActive(i) {
+    active = (i + series.length) % series.length;
+    [...track.children].forEach((b, j) => b.classList.toggle("active", j === active));
+    const cs = getComputedStyle(strip);
+    const sw = parseFloat(cs.getPropertyValue("--s")), l = parseFloat(cs.getPropertyValue("--l")), g = parseFloat(cs.getPropertyValue("--g"));
+    const center = active * (sw + g) + l / 2;
+    track.style.transform = `translateX(${strip.clientWidth / 2 - center}px)`;
+    const s = series[active];
+    $("stripCap").textContent = `${s.title} — ${s.year} — ${s.photos.length} photographs`;
+  }
+  $("stripPrev").addEventListener("click", () => setActive(active - 1));
+  $("stripNext").addEventListener("click", () => setActive(active + 1));
+  window.addEventListener("resize", () => setActive(active));
+  if (scrub) {
+    strip.classList.add("scrub");
+    strip.addEventListener("click", () => { location.href = seriesUrl(series[active]); });
+    strip.addEventListener("mousemove", e => {
+      const r = strip.getBoundingClientRect();
+      const i = Math.min(series.length - 1, Math.max(0, Math.floor((e.clientX - r.left) / r.width * series.length)));
+      if (i !== active) setActive(i);
+    });
+  }
+  let x0 = null;
+  strip.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+  strip.addEventListener("touchend", e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) setActive(active + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+
+  // 全部照片：小方格，点开后完整显示
+  const thumb = src => src.replace(/\/([^/]+)$/, "/thumbs/$1");
+  const allPhotos = series.flatMap(s => s.photos.map(p => ({ src: p[0], place: p[1], date: p[2], gear: p[3], s })));
+  $("allCount").textContent = `${allPhotos.length} photographs`;
+  allPhotos.forEach((p, i) => {
+    const b = document.createElement("button");
+    b.innerHTML = `<img src="${thumb(p.src)}" alt="${p.place}" loading="lazy">`;
+    const im = b.querySelector("img");
+    fadeIn(im);
+    im.onerror = () => { im.onerror = null; im.src = p.src; };  // 没有小图时用原图
+    b.addEventListener("click", () => openLb(i));
+    $("grid").appendChild(b);
+  });
+  const lb = $("lb"), lbImg = $("lbImg");
+  if (!scrub) $("lbHint").textContent = "Swipe to browse";
+  let lbAt = 0;
+  function showLb(i) {
+    lbAt = (i + allPhotos.length) % allPhotos.length;
+    const p = allPhotos[lbAt];
+    lbImg.style.opacity = 0;
+    lbImg.onload = () => { lbImg.style.opacity = 1; };
+    lbImg.src = p.src; lbImg.alt = p.place;
+    $("lbNo").textContent = `${pad(lbAt + 1)} / ${pad(allPhotos.length)}`;
+    $("lbSeries").textContent = p.s.title;
+    $("lbCap").textContent = [p.place, p.date, p.gear].filter(Boolean).join(" — ");
+    $("lbLink").href = seriesUrl(p.s);
+  }
+  function openLb(i) { showLb(i); lb.classList.add("open"); document.body.style.overflow = "hidden"; }
+  function closeLb() { lb.classList.remove("open"); document.body.style.overflow = ""; }
+  $("lbPrev").addEventListener("click", () => showLb(lbAt - 1));
+  $("lbNext").addEventListener("click", () => showLb(lbAt + 1));
+  $("lbClose").addEventListener("click", closeLb);
+  document.addEventListener("keydown", e => {
+    if (!lb.classList.contains("open")) return;
+    if (e.key === "Escape") closeLb();
+    if (e.key === "ArrowLeft") showLb(lbAt - 1);
+    if (e.key === "ArrowRight") showLb(lbAt + 1);
+  });
+  let lx = null;
+  lb.addEventListener("touchstart", e => { lx = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", e => {
+    if (lx === null) return;
+    const dx = e.changedTouches[0].clientX - lx;
+    if (Math.abs(dx) > 40) showLb(lbAt + (dx < 0 ? 1 : -1));
+    lx = null;
+  });
+
+  // 系列浏览
+  let cur = 0, pos = 0;
+  const vImg = $("vImg");
+  series.forEach((s, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<button>${s.title}<span class="yr">${s.year}</span></button>`;
+    li.querySelector("button").addEventListener("click", () => wheelTo(i));
+    $("seriesList").appendChild(li);
+  });
+  // 滚轮：根据离中线的距离调大小和透明度，停下后选中中间那一行
+  const wheel = $("seriesList");
+  const rowH = () => wheel.querySelector("li").offsetHeight;
+  function wheelTo(i, smooth = true) { wheel.scrollTo({ top: i * rowH(), behavior: smooth ? "smooth" : "auto" }); }
+  function paintWheel() {
+    const c = wheel.scrollTop / rowH();
+    [...wheel.querySelectorAll("button")].forEach((b, j) => {
+      const d = Math.min(Math.abs(j - c), 3);
+      b.style.transform = `scale(${1.12 - d * 0.16})`;
+      b.style.opacity = 1 - d * 0.3;
+    });
+  }
+  let wheelTimer;
+  wheel.addEventListener("scroll", () => {
+    requestAnimationFrame(paintWheel);
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(() => {
+      const i = Math.round(wheel.scrollTop / rowH());
+      if (i !== cur) setSeries(i);
+    }, 120);
+  }, { passive: true });
+  function setSeries(i) {
+    cur = i; pos = 0;
+    [...$("seriesList").querySelectorAll("button")].forEach((b, j) => b.classList.toggle("active", j === cur));
+    showPhoto();
+  }
+  function showPhoto() {
+    const s = series[cur], p = s.photos[pos];
+    vImg.style.opacity = 0;
+    setTimeout(() => { vImg.src = p[0]; vImg.alt = p[1]; }, 200);
+    vImg.onload = () => { vImg.style.opacity = 1; };
+    $("vCount").textContent = `${pos + 1} of ${s.photos.length}`;
+    $("vTitle").textContent = s.title;
+    $("vMeta").innerHTML = `${p[1]}, ${p[2]}<br>${[s.kind, p[3]].filter(Boolean).join(" · ")}`;
+  }
+  const step = d => { const n = series[cur].photos.length; pos = (pos + d + n) % n; showPhoto(); };
+  $("vPrev").addEventListener("click", () => step(-1));
+  $("vNext").addEventListener("click", () => step(1));
+  vImg.addEventListener("click", () => step(1));
+
+  // 键盘左右键：控制当前屏幕中间的那个区域
+  document.addEventListener("keydown", e => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (ov.classList.contains("open")) return;
+    const d = e.key === "ArrowRight" ? 1 : -1;
+    const r = $("series").getBoundingClientRect();
+    if (r.top < innerHeight / 2 && r.bottom > innerHeight / 2) step(d); else setActive(active + d);
+  });
+
+  // 目录浮层：硫酸纸效果，悬停时封面在背后虚化透出
+  const ov = $("indexOv"), ovBg = $("ovBg"), ovList = $("ovList");
+  const showBg = i => [...ovBg.children].forEach((im, j) => im.classList.toggle("show", j === i));
+  series.forEach((s, i) => {
+    const im = document.createElement("img");
+    im.src = s.photos[s.cover || 0][0]; im.alt = "";
+    ovBg.appendChild(im);
+    const a = document.createElement("a");
+    a.href = seriesUrl(s); a.textContent = s.title;
+    a.addEventListener("mouseenter", () => showBg(i));
+    a.addEventListener("focus", () => showBg(i));
+    ovList.appendChild(a);
+    if (i < series.length - 1) ovList.appendChild(document.createTextNode(", "));
+  });
+  $("ovCount").textContent = `${pad(series.length)} Series`;
+  ovList.addEventListener("mouseleave", () => showBg(-1));
+  function openIndex() {
+    ov.classList.add("open"); ov.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeIndex() {
+    ov.classList.remove("open"); ov.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = ""; showBg(-1);
+  }
+  document.querySelectorAll("[data-open-index]").forEach(b => b.addEventListener("click", openIndex));
+  $("ovClose").addEventListener("click", closeIndex);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && ov.classList.contains("open")) closeIndex(); });
+
+  setActive(0);
+  setSeries(0);
+  wheelTo(0, false); paintWheel();
+</script>
+</body>
+</html>

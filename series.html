@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Series · Shuning Wei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@200&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --muted: #8a8a8a;
+    --line: #e6e6e6;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --gutter: clamp(16px, 3.2vw, 48px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; width: 100%; height: auto; background: var(--line); }
+  a { color: inherit; text-decoration: none; }
+  .mono {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  img.fade { opacity: 0; transition: opacity .6s ease; }
+  img.fade.loaded { opacity: 1; }
+
+  /* ---------- Bars ---------- */
+  .bar {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+    padding: 18px var(--gutter);
+  }
+  .bar .mid { justify-self: center; }
+  .bar nav { justify-self: end; display: flex; gap: 22px; }
+  .bar a:hover { color: var(--muted); }
+
+  /* ---------- Series header ---------- */
+  .s-head {
+    display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter);
+    padding: clamp(48px, 9vw, 140px) var(--gutter) 0;
+    align-items: end;
+  }
+  .s-num { grid-column: 1 / -1; margin-bottom: 14px; }
+  .s-title {
+    grid-column: 1 / 9;
+    font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
+    font-weight: 200;
+    font-size: clamp(48px, 8vw, 124px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .s-meta { grid-column: 9 / -1; font-size: 13px; line-height: 1.35; }
+  .s-meta p + p { margin-top: 12px; }
+  .s-meta .muted { color: var(--muted); }
+
+  /* ---------- Photo flow ---------- */
+  .flow {
+    display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter);
+    row-gap: clamp(72px, 11vw, 180px);
+    padding: clamp(72px, 11vw, 180px) var(--gutter);
+  }
+  .flow figure { min-width: 0; }
+  .flow figcaption {
+    display: flex; gap: 14px; margin-top: 10px;
+    font-size: 11px; line-height: 1.35;
+  }
+  .flow figcaption .muted { color: var(--muted); }
+  .flow figcaption .n { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--muted); padding-top: 1px; }
+
+  /* landscape placements */
+  .full   { grid-column: 1 / -1; }
+  .bleed  { grid-column: 1 / -1; margin-inline: calc(var(--gutter) * -1); }
+  .bleed figcaption { padding-inline: var(--gutter); }
+  .wide-l { grid-column: 1 / 10; }
+  .wide-r { grid-column: 4 / -1; }
+  .mid-c  { grid-column: 3 / 11; }
+  /* portrait placements */
+  .solo-l { grid-column: 1 / 6; }
+  .solo-r { grid-column: 8 / -1; }
+  .solo-c { grid-column: 5 / 9; }
+  .pair   { grid-column: 2 / 12; display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--gutter); align-items: end; }
+
+
+  /* ---------- Next series ---------- */
+  .next {
+    display: block; border-top: 1px solid var(--line);
+    padding: clamp(28px, 4vw, 48px) var(--gutter) clamp(64px, 9vw, 120px);
+  }
+  .next .t {
+    display: block; margin-top: 14px;
+    font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
+    font-weight: 200; font-size: clamp(40px, 6vw, 96px); line-height: 0.95; letter-spacing: -0.04em;
+    transition: color .3s;
+  }
+  .next:hover .t { color: var(--muted); }
+  footer.bar { border-top: 1px solid var(--line); }
+
+  @media (max-width: 760px) {
+    .bar nav { gap: 14px; }
+    .bar .mid { display: none; }
+    .bar { grid-template-columns: 1fr auto; }
+    .s-title, .s-meta { grid-column: 1 / -1; }
+    .s-meta { margin-top: 28px; }
+    .flow { row-gap: 64px; }
+    .full, .wide-l, .wide-r, .mid-c, .pair { grid-column: 1 / -1; }
+    .solo-l, .solo-c { grid-column: 1 / 10; }
+    .solo-r { grid-column: 4 / -1; }
+    .pair { column-gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar mono">
+  <a href="index.html">Shuning Wei</a>
+  <a class="mid" href="index.html#series">(All series)</a>
+  <nav>
+    <a href="index.html#works">Work</a>
+    <a href="index.html#series">Series</a>
+    <a href="index.html#about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="s-head">
+    <p class="s-num mono" id="sNum"></p>
+    <h1 class="s-title" id="sTitle"></h1>
+    <div class="s-meta">
+      <p id="sFacts"></p>
+      <p class="muted" id="sText"></p>
+    </div>
+  </section>
+  <section class="flow" id="flow"></section>
+  <a class="next" id="next"><span class="mono">Next series</span><span class="t" id="nextT"></span></a>
+</main>
+
+<footer class="bar mono">
+  <span>© 2026 Shuning Wei</span>
+  <a class="mid" href="#top" onclick="scrollTo({top:0,behavior:'smooth'});return false">(Back to top)</a>
+  <nav>
+    <a href="https://www.instagram.com/weishunyeong/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://xhslink.cn/o/6FowlFdEAAC" target="_blank" rel="noopener">RedNote</a>
+  </nav>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  const series = SERIES;
+
+  const slug = new URLSearchParams(location.search).get("s") || series[0].slug;
+  const si = Math.max(0, series.findIndex(s => s.slug === slug));
+  const s = series[si];
+  const pad = n => String(n).padStart(2, "0");
+
+  document.title = `${s.title} · Shuning Wei`;
+  sNum.textContent = `(${pad(si + 1)}) ${s.kind}`;
+  sTitle.textContent = s.title;
+  sFacts.innerHTML = `${s.year}<br>${s.photos.length} photographs`;
+  sText.textContent = s.text;
+  const nx = series[(si + 1) % series.length];
+  next.href = `series.html?s=${nx.slug}`;
+  nextT.textContent = nx.title;
+
+  // Find each photo's shape; use w/h when given, otherwise load the image to measure it.
+  const shape = p => p.w && p.h ? Promise.resolve(p.w / p.h) : new Promise(res => {
+    const im = new Image();
+    im.onload = () => res(im.naturalWidth / im.naturalHeight);
+    im.onerror = () => res(1.5);
+    im.src = p.src;
+  });
+
+  const fig = (p, n, cls = "") => `
+    <figure class="${cls}">
+      <img class="fade" src="${p.src}" alt="${p.place}" loading="lazy" ${p.w ? `width="${p.w}" height="${p.h}"` : ""}>
+      <figcaption><span class="n">${pad(n)}</span><span>${p.place}<br><span class="muted">${[p.date, p.gear].filter(Boolean).join(" · ")}</span></span></figcaption>
+    </figure>`;
+
+  // Layout rules:
+  // - feature: true  -> edge to edge
+  // - landscape      -> cycles through full width / wide left / wide right / centred
+  // - two portraits  -> side by side
+  // - one portrait   -> one side, alternating, with empty space on the other
+  Promise.all(s.photos.map(shape)).then(ratios => {
+    const landscape = ["full", "wide-r", "mid-c", "wide-l"];
+    const solo = ["solo-l", "solo-r", "solo-c"];
+    let li = 0, pi = 0, html = "";
+    for (let i = 0; i < s.photos.length; i++) {
+      const p = s.photos[i], r = ratios[i];
+      if (p.feature) { html += fig(p, i + 1, "bleed"); continue; }
+      if (r >= 1.05) { html += fig(p, i + 1, landscape[li++ % landscape.length]); continue; }
+      const q = s.photos[i + 1];
+      if (q && !q.feature && ratios[i + 1] < 1.05) {
+        html += `<div class="pair">${fig(p, i + 1)}${fig(q, i + 2)}</div>`;
+        i++;
+      } else {
+        html += fig(p, i + 1, solo[pi++ % solo.length]);
+      }
+    }
+    flow.innerHTML = html;
+    flow.querySelectorAll("img.fade").forEach(im => {
+      if (im.complete) im.classList.add("loaded");
+      else im.addEventListener("load", () => im.classList.add("loaded"));
+    });
+  });
+</script>
+</body>
+</html>
