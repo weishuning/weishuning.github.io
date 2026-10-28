@@ -160,6 +160,7 @@
   .grid button { aspect-ratio: 1; overflow: hidden; background: var(--line); }
   .grid img { transition: opacity .3s, transform .8s ease; }
   .grid button:hover img { transform: scale(1.06); }
+  .grid-more { display: none; margin-top: 20px; width: 100%; padding: 14px 0; border-top: 1px solid var(--line); text-align: center; }
 
   /* ---------- Lightbox（点开后完整显示） ---------- */
   .lb {
@@ -286,8 +287,12 @@
     .arch-left { gap: 0; }
     .arch-text { display: none; }
     /* 滚轮在手机上只露三行 */
+    .series-list { --row: 44px; height: calc(var(--row) * 3); padding: var(--row) 0; margin-top: 16px; font-size: 24px; }
     .about { min-height: auto; }
-    .grid { grid-template-columns: repeat(4, 1fr); gap: 3px; }
+    /* 手机：方格小一点，先只显示三行，点按钮再展开全部 */
+    .grid { grid-template-columns: repeat(5, 1fr); gap: 2px; }
+    .grid:not(.open) button:nth-child(n+16) { display: none; }
+    .grid-more { display: block; }
     .lb-foot { grid-template-columns: 1fr auto; row-gap: 8px; }
     .lb-foot #lbCap { grid-column: 1 / -1; order: -1; text-align: left; }
     .cols { grid-template-columns: 1fr 1fr; row-gap: 14px; }
@@ -365,6 +370,7 @@
     <span class="mono" id="allCount"></span>
   </div>
   <div class="grid" id="grid"></div>
+  <button class="grid-more mono" id="gridMore"></button>
 </section>
 
 <section class="about" id="about">
@@ -496,6 +502,14 @@
   const thumb = src => src.replace(/\/([^/]+)$/, "/thumbs/$1");
   const allPhotos = series.flatMap(s => s.photos.map(p => ({ src: p[0], place: p[1], date: p[2], gear: p[3], s })));
   $("allCount").textContent = `${allPhotos.length} photographs`;
+  const moreBtn = $("gridMore");
+  const setMore = () => { moreBtn.textContent = $("grid").classList.contains("open") ? "(Show less)" : `(Show all ${allPhotos.length})`; };
+  moreBtn.addEventListener("click", () => {
+    const open = $("grid").classList.toggle("open");
+    setMore();
+    if (!open) $("all").scrollIntoView();
+  });
+  setMore();
   allPhotos.forEach((p, i) => {
     const b = document.createElement("button");
     b.innerHTML = `<img src="${thumb(p.src)}" alt="${p.place}" loading="lazy">`;
