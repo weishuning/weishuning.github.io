@@ -272,14 +272,20 @@
     .bar .mid { display: none; }
     .nav-index { display: inline; }
     .ov-close { top: 52px; width: 32px; height: 32px; }
-    .bar nav { gap: 14px; }
-    .hero { min-height: auto; gap: 56px; }
-    .intro { text-align: left; }
-    .strip { --s: 64px; --l: 200px; --g: 6px; }
+    .bar nav { gap: 16px; }
+    /* 手机导航只留三个：Index、Archive、About */
+    header.bar nav a[href="#works"], header.bar nav a[href="#series"] { display: none; }
+    /* 首页第一屏：名字在上，胶片条在下，正好一屏 */
+    .hero { min-height: calc(100svh - 52px); gap: 32px; padding-bottom: 28px; }
+    .name { font-size: 17vw; }
+    .intro { text-align: left; font-size: 14px; }
+    .strip { --s: 17vw; --l: 60vw; --g: 6px; }
     .strip-foot { grid-template-columns: 1fr 1fr; row-gap: 10px; }
     .strip-foot #stripCap { grid-column: 1 / -1; order: -1; }
-    .archive { grid-template-columns: 1fr; }
-    .arch-left { gap: 32px; }
+    .archive { grid-template-columns: 1fr; gap: 20px; padding-top: 48px; padding-bottom: 56px; }
+    .arch-left { gap: 0; }
+    .arch-text { display: none; }
+    /* 滚轮在手机上只露三行 */
     .about { min-height: auto; }
     .grid { grid-template-columns: repeat(4, 1fr); gap: 3px; }
     .lb-foot { grid-template-columns: 1fr auto; row-gap: 8px; }
@@ -458,7 +464,8 @@
     active = (i + series.length) % series.length;
     [...track.children].forEach((b, j) => b.classList.toggle("active", j === active));
     const cs = getComputedStyle(strip);
-    const sw = parseFloat(cs.getPropertyValue("--s")), l = parseFloat(cs.getPropertyValue("--l")), g = parseFloat(cs.getPropertyValue("--g"));
+    const px = n => { const v = cs.getPropertyValue(n).trim(); return parseFloat(v) * (v.endsWith("vw") ? innerWidth / 100 : 1); };
+    const sw = px("--s"), l = px("--l"), g = px("--g");
     const center = active * (sw + g) + l / 2;
     track.style.transform = `translateX(${strip.clientWidth / 2 - center}px)`;
     const s = series[active];
