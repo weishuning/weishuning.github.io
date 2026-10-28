@@ -19,6 +19,16 @@ const SERIES = [
       { ...local("photos/seokjojeon/07.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
       { ...local("photos/seokjojeon/08.jpg", 1333, 2000), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" } ] },
 
+  { slug: "anguk", title: "Anguk", year: "2026", kind: "City", cover: 1,
+    text: "Palace walls, small shops and the subway around Anguk, Seoul, September 2026.",
+    photos: [
+      { ...local("photos/anguk/01.jpg", 1429, 2000), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/anguk/02.jpg", 1440, 955), place: "Anguk Station, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm", feature: true },
+      { ...local("photos/anguk/03.jpg", 1440, 955), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/anguk/04.jpg", 1884, 1248), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/anguk/05.jpg", 1440, 955), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/anguk/06.jpg", 1440, 955), place: "Anguk Station, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" } ] },
+
   { slug: "huangshan", title: "Huangshan", year: "2026", kind: "Travel", cover: 3,
     text: "Old villages, lanterns and summer fireworks in Huangshan, Anhui, July 2026.",
     photos: [
