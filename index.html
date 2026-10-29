@@ -8,7 +8,7 @@
 <meta name="description" content="Landscape and street photography portfolio">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@200&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@200;300&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #ffffff;
@@ -61,8 +61,8 @@
   .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
   .name {
     font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
-    font-weight: 200;
-    font-size: clamp(40px, 6.2vw, 92px);
+    font-weight: 300;
+    font-size: clamp(34px, 4.2vw, 62px);
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
@@ -155,7 +155,7 @@
     border-top: 1px solid var(--line);
   }
   .all-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(28px, 4vw, 48px); }
-  .all-head h2 { font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif; font-weight: 200; font-size: clamp(32px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em; }
+  .all-head h2 { font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 4px; }
   .grid button { aspect-ratio: 1; overflow: hidden; background: var(--line); }
   .grid img { transition: opacity .3s, transform .8s ease; }
@@ -192,7 +192,7 @@
   }
   .about-name {
     font-family: "Helvetica Neue", Helvetica, "Inter Tight", Arial, sans-serif;
-    font-weight: 200;
+    font-weight: 300;
     font-size: clamp(32px, 4vw, 56px);
     line-height: 0.95;
     letter-spacing: -0.04em;
@@ -278,7 +278,7 @@
     header.bar nav a[href="#works"], header.bar nav a[href="#series"] { display: none; }
     /* 首页第一屏：名字在上，胶片条在下，正好一屏 */
     .hero { min-height: calc(100svh - 52px); gap: 32px; padding-bottom: 28px; }
-    .name { font-size: 11vw; }
+    .name { font-size: 9vw; }
     .intro { text-align: left; font-size: 14px; }
     .strip { --s: 17vw; --l: 60vw; --g: 6px; }
     .strip-foot { grid-template-columns: 1fr 1fr; row-gap: 10px; }
