@@ -253,6 +253,8 @@
     letter-spacing: -0.045em;
   }
   .ov-list a { transition: color .15s; }
+  .ov-list .ov-back { display: block; margin-bottom: 18px; color: var(--muted); -webkit-text-stroke: 0; }
+  .ov-list .ov-back:hover { color: var(--ink); -webkit-text-stroke: 0; }
   .ov-list a:hover, .ov-list a:focus-visible {
     color: transparent;
     -webkit-text-stroke: 1px var(--ink);
@@ -442,7 +444,7 @@
   </div>
 </div>
 
-<script src="data.js?v=20261029"></script>
+<script src="data.js?v=20261029b"></script>
 <script>
   // 照片数据在 data.js 里；这里转成 [图片, 地点, 日期, 器材] 的格式
   const series = SERIES.map(s => ({ ...s, photos: s.photos.map(p => [p.src, p.place, p.date, p.gear]) }));
@@ -614,18 +616,40 @@
   // 目录浮层：硫酸纸效果，悬停时封面在背后虚化透出
   const ov = $("indexOv"), ovBg = $("ovBg"), ovList = $("ovList");
   const showBg = i => [...ovBg.children].forEach((im, j) => im.classList.toggle("show", j === i));
-  series.forEach((s, i) => {
+  series.forEach(s => {
     const im = document.createElement("img");
     im.src = s.photos[s.cover || 0][0]; im.alt = "";
     ovBg.appendChild(im);
-    const a = document.createElement("a");
-    a.href = seriesUrl(s); a.textContent = s.title;
-    a.addEventListener("mouseenter", () => showBg(i));
-    a.addEventListener("focus", () => showBg(i));
-    ovList.appendChild(a);
-    if (i < series.length - 1) ovList.appendChild(document.createTextNode(", "));
   });
-  $("ovCount").textContent = `${pad(series.length)} Series`;
+  // 同一个城市（city）的几个系列在目录里合成一个城市，点城市再列出具体系列
+  const ovTop = [];
+  series.forEach((s, i) => {
+    if (!s.city) { ovTop.push({ title: s.title, i, s }); return; }
+    let g = ovTop.find(it => it.city === s.city);
+    if (!g) ovTop.push(g = { title: s.city, city: s.city, i, kids: [] });
+    g.kids.push({ title: s.title, i, s });
+  });
+  function renderOv(items, city) {
+    ovList.innerHTML = "";
+    if (city) {
+      const back = document.createElement("a");
+      back.href = "#"; back.className = "ov-back mono"; back.textContent = `← All series / ${city}`;
+      back.addEventListener("click", e => { e.preventDefault(); renderOv(ovTop); });
+      ovList.appendChild(back);
+    }
+    items.forEach((it, k) => {
+      const a = document.createElement("a");
+      a.textContent = it.title;
+      a.href = it.kids ? "#" : seriesUrl(it.s);
+      if (it.kids) a.addEventListener("click", e => { e.preventDefault(); renderOv(it.kids, it.city); });
+      a.addEventListener("mouseenter", () => showBg(it.i));
+      a.addEventListener("focus", () => showBg(it.i));
+      ovList.appendChild(a);
+      if (k < items.length - 1) ovList.appendChild(document.createTextNode(", "));
+    });
+    $("ovCount").textContent = `${pad(items.length)} Series`;
+  }
+  renderOv(ovTop);
   ovList.addEventListener("mouseleave", () => showBg(-1));
   function openIndex() {
     ov.classList.add("open"); ov.setAttribute("aria-hidden", "false");
@@ -633,7 +657,7 @@
   }
   function closeIndex() {
     ov.classList.remove("open"); ov.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = ""; showBg(-1);
+    document.body.style.overflow = ""; showBg(-1); renderOv(ovTop);
   }
   document.querySelectorAll("[data-open-index]").forEach(b => b.addEventListener("click", openIndex));
   $("ovClose").addEventListener("click", closeIndex);
