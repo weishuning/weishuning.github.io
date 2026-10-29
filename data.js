@@ -8,8 +8,8 @@
 const local = (src, w, h) => ({ src, w, h });
 
 const SERIES = [
-  { slug: "seokjojeon", title: "Seokjojeon", year: "2026", kind: "Architecture", cover: 5,
-    text: "Seokjojeon Hall in Deoksugung Palace, Seoul, September 2026.",
+  { slug: "seoul", title: "Seoul", year: "2025—26", kind: "City", cover: 5,
+    text: "Palaces, back streets and spring in Seoul, 2025—2026.",
     photos: [
       { ...local("photos/seokjojeon/01.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm", feature: true },
       { ...local("photos/seokjojeon/02.jpg", 1333, 2000), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
@@ -18,17 +18,29 @@ const SERIES = [
       { ...local("photos/seokjojeon/05.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
       { ...local("photos/seokjojeon/06.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
       { ...local("photos/seokjojeon/07.jpg", 1440, 960), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
-      { ...local("photos/seokjojeon/08.jpg", 1333, 2000), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" } ] },
-
-  { slug: "anguk", title: "Anguk", year: "2026", kind: "City", cover: 1, coverPos: "11% 50%",
-    text: "Palace walls, small shops and the subway around Anguk, Seoul, September 2026.",
-    photos: [
+      { ...local("photos/seokjojeon/08.jpg", 1333, 2000), place: "Seokjojeon, Deoksugung, Seoul", date: "2026.09", gear: "Ricoh GR IV · 28mm" },
       { ...local("photos/anguk/01.jpg", 1429, 2000), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
       { ...local("photos/anguk/02.jpg", 1440, 955), place: "Anguk Station, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm", feature: true },
       { ...local("photos/anguk/03.jpg", 1440, 955), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
       { ...local("photos/anguk/04.jpg", 1884, 1248), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
       { ...local("photos/anguk/05.jpg", 1440, 955), place: "Anguk, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/anguk/06.jpg", 1440, 955), place: "Anguk Station, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" } ] },
+      { ...local("photos/anguk/06.jpg", 1440, 955), place: "Anguk Station, Seoul", date: "2026.09", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/01.jpg", 2000, 1326), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm", feature: true },
+      { ...local("photos/seoul/02.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/03.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/04.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/05.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/06.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/07.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul/08.jpg", 1440, 955), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
+      { ...local("photos/seoul-march/01.jpg", 1545, 1024), place: "Yoon Gallery, Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/02.jpg", 1545, 1024), place: "Seoul Sticker Shop, Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/03.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/04.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/05.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/06.jpg", 1545, 1024), place: "Tamburins, Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/07.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
+      { ...local("photos/seoul-march/08.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" } ] },
 
   { slug: "huangshan", title: "Huangshan", year: "2026", kind: "Travel", cover: 3,
     text: "Old villages, lanterns and summer fireworks in Huangshan, Anhui, July 2026.",
@@ -120,28 +132,5 @@ const SERIES = [
       { ...local("photos/taipei/03.jpg", 1629, 1080), place: "Taipei", date: "2025.05", gear: "" },
       { ...local("photos/taipei/04.jpg", 1629, 1080), place: "Taipei", date: "2025.05", gear: "" },
       { ...local("photos/taipei/05.jpg", 1629, 1080), place: "Taipei 101, Taipei", date: "2025.05", gear: "" },
-      { ...local("photos/taipei/06.jpg", 1629, 1080), place: "Taipei", date: "2025.05", gear: "" } ] },
-
-  { slug: "seoul", title: "Seoul Spring", year: "2025", kind: "City", cover: 4,
-    text: "Spring in Seoul, April 2025.",
-    photos: [
-      { ...local("photos/seoul/01.jpg", 2000, 1326), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm", feature: true },
-      { ...local("photos/seoul/02.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/03.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/04.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/05.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/06.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/07.jpg", 1440, 954), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" },
-      { ...local("photos/seoul/08.jpg", 1440, 955), place: "Seoul", date: "2025.04", gear: "Canon AE-1 · 50mm" } ] },
-  { slug: "seoul-streets", title: "Seoul Streets", year: "2025", kind: "City", cover: 4,
-    text: "Galleries, shops and cafés in Seoul, March 2025.",
-    photos: [
-      { ...local("photos/seoul-march/01.jpg", 1545, 1024), place: "Yoon Gallery, Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/02.jpg", 1545, 1024), place: "Seoul Sticker Shop, Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/03.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/04.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/05.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/06.jpg", 1545, 1024), place: "Tamburins, Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/07.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" },
-      { ...local("photos/seoul-march/08.jpg", 1545, 1024), place: "Seoul", date: "2025.03", gear: "" } ] }
+      { ...local("photos/taipei/06.jpg", 1629, 1080), place: "Taipei", date: "2025.05", gear: "" } ] }
 ];
